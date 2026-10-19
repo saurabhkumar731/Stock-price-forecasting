@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Predict — Ledger</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="topnav">
+  <div class="brand"><a href="index.html" style="color:inherit;">Ledger<em>.</em></a></div>
+  <nav>
+    <a href="predict.html" class="active">Predict</a>
+    <a href="visualize.html">Visualize</a>
+    <a href="chatbot.html">Chatbot</a>
+  </nav>
+  <div class="nav-right">
+    <span class="muted" id="nav-username" style="margin-right:18px;"></span>
+    <a href="#" class="btn" id="logout-btn">Log out</a>
+  </div>
+</div>
+
+<div class="container">
+  <h2>Forecast a stock</h2>
+  <p class="muted" style="margin-bottom:32px;">Choose a company, a future date, and a mode.</p>
+
+  <div class="predict-grid">
+    <div class="panel">
+      <form id="predict-form">
+        <div class="field">
+          <label for="company">Company</label>
+          <select id="company"></select>
+        </div>
+        <div class="field">
+          <label for="target-date">Predict for date</label>
+          <input type="date" id="target-date" required>
+        </div>
+        <div class="field">
+          <label for="mode">Mode</label>
+          <select id="mode">
+            <option value="comparison">Compare ARIMA vs LSTM</option>
+            <option value="single">Single model</option>
+          </select>
+        </div>
+        <div class="field" id="model-field" style="display:none;">
+          <label for="model">Model</label>
+          <select id="model">
+            <option value="ARIMA">ARIMA</option>
+            <option value="LSTM">LSTM</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-solid" style="width:100%;">Run forecast</button>
+        <div class="error-text" id="error"></div>
+      </form>
+    </div>
+
+    <div id="results"></div>
+  </div>
+</div>
+
+<script src="js/nav.js"></script>
+<script src="js/predict.js"></script>
+</body>
+</html>

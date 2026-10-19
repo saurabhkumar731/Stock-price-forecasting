@@ -1,0 +1,47 @@
+                         USER
+                           │
+                           ▼
+                  ┌─────────────────┐
+                  │  Chatbot UI     │
+                  │  chatbot.html   │
+                  │  chatbot.js     │
+                  └────────┬────────┘
+                           │
+                           ▼
+                  POST /api/chat
+                           │
+                           ▼
+                ┌─────────────────────┐
+                │   Mistral Router    │
+                │      Ollama         │
+                └──────────┬──────────┘
+                           │
+                    Understand Query
+                           │
+          ┌────────────────┼─────────────────┐
+          │                │                 │
+          ▼                ▼                 ▼
+    General Query     Stock Data Query    ML Query
+          │                │                 │
+          │          ┌─────┴─────┐      ┌────┴────┐
+          │          ▼           ▼      ▼         ▼
+          │        Price        Trend  ARIMA     LSTM
+          │          │           │      │         │
+          │          └─────┬─────┘      └────┬────┘
+          │                │                  │
+          └────────────────┴──────────────────┘
+                           │
+                           ▼
+                  Backend Tool Results
+                           │
+                           ▼
+                ┌─────────────────────┐
+                │  Mistral / Ollama   │
+                │  Final Explanation  │
+                └──────────┬──────────┘
+                           │
+                           ▼
+                    FINAL ANSWER
+                           │
+                           ▼
+                    MongoDB History

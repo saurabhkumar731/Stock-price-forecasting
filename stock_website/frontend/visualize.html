@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Visualize — Ledger</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        /* ================================
+           VISUALIZATION PAGE ONLY
+        ================================= */
+
+        .viz-header {
+            margin-bottom: 28px;
+        }
+
+        .viz-header h2 {
+            margin-bottom: 8px;
+            font-size: 2rem;
+        }
+
+        .viz-header p {
+            color: var(--text-muted);
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        /* Controls */
+
+        .controls {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr auto;
+            gap: 16px;
+            align-items: end;
+            margin-bottom: 24px;
+        }
+
+        .control-btn {
+            height: 46px;
+            padding: 0 24px;
+        }
+
+        /* Empty */
+
+        .empty-state {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 50px 30px;
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+
+        /* Overview cards */
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .stat-title {
+            color: var(--text-muted);
+            font-size: 0.78rem;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-family: var(--font-mono);
+            font-size: 1.35rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .stat-sub {
+            margin-top: 7px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Sections */
+
+        .viz-section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .section-heading {
+            margin-bottom: 18px;
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .section-description {
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            margin: 0;
+        }
+
+        /* Charts */
+
+        .chart-container {
+            position: relative;
+            height: 330px;
+        }
+
+        .forecast-chart-container {
+            height: 350px;
+        }
+
+        /* Forecast cards */
+
+        .forecast-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .forecast-card {
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            padding: 20px;
+            background: var(--surface-raised);
+        }
+
+        .forecast-card-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 14px;
+        }
+
+        .forecast-price {
+            font-family: var(--font-mono);
+            font-size: 1.45rem;
+            margin-bottom: 10px;
+        }
+
+        .forecast-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 7px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.82rem;
+        }
+
+        .forecast-row:last-child {
+            border-bottom: none;
+        }
+
+        .forecast-label {
+            color: var(--text-muted);
+        }
+
+        /* Insight */
+
+        .insight-box {
+            margin-top: 18px;
+            padding: 15px 18px;
+            border-left: 3px solid var(--accent);
+            background: var(--surface-raised);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+
+        .insight-box strong {
+            color: var(--text-primary);
+        }
+
+        /* Performance */
+
+        .performance-layout {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            gap: 22px;
+            align-items: center;
+        }
+
+        .performance-chart {
+            height: 280px;
+        }
+
+        .performance-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.84rem;
+        }
+
+        .performance-table th,
+        .performance-table td {
+            padding: 12px 10px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .performance-table th {
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .performance-table td {
+            color: var(--text-primary);
+        }
+
+        .performance-table .number {
+            font-family: var(--font-mono);
+        }
+
+        .performance-note {
+            margin-top: 15px;
+            color: var(--text-muted);
+            font-size: 0.78rem;
+            line-height: 1.5;
+        }
+
+        /* Understanding */
+
+        .understanding-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .understanding-item {
+            padding: 15px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--surface-raised);
+        }
+
+        .understanding-item strong {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.85rem;
+        }
+
+        .understanding-item span {
+            color: var(--text-muted);
+            font-size: 0.78rem;
+            line-height: 1.5;
+        }
+
+        /* Error */
+
+        .error-text {
+            color: var(--down);
+            margin-bottom: 18px;
+            font-size: 0.88rem;
+        }
+
+        /* Responsive */
+
+        @media (max-width: 1000px) {
+
+            .controls {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .performance-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 700px) {
+
+            .controls {
+                grid-template-columns: 1fr;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .forecast-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .understanding-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-container {
+                height: 280px;
+            }
+
+            .viz-section {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ================================
+         NAVBAR
+    ================================= -->
+
+    <div class="topnav">
+
+        <div class="brand">
+            <a href="index.html" style="color:inherit;">
+                Ledger<em>.</em>
+            </a>
+        </div>
+
+        <nav>
+            <a href="predict.html">Predict</a>
+            <a href="visualize.html" class="active">Visualize</a>
+            <a href="chatbot.html">Chatbot</a>
+        </nav>
+
+        <div class="nav-right">
+            <span class="muted"
+                  id="nav-username"
+                  style="margin-right:18px;">
+            </span>
+
+            <a href="#" class="btn" id="logout-btn">
+                Log out
+            </a>
+        </div>
+
+    </div>
+
+
+    <div class="container">
+
+        <!-- ================================
+             HEADER
+        ================================= -->
+
+        <div class="viz-header">
+
+            <h2>Stock Analytics</h2>
+
+            <p>
+                Understand the stock's historical movement and future forecast.
+            </p>
+
+        </div>
+
+
+        <!-- ================================
+             CONTROLS
+        ================================= -->
+
+        <div class="panel controls">
+
+            <div class="field">
+
+                <label for="company">
+                    Company
+                </label>
+
+                <select id="company">
+                    <option value="">
+                        Loading companies...
+                    </option>
+                </select>
+
+            </div>
+
+
+            <div class="field">
+
+                <label for="period">
+                    Historical Period
+                </label>
+
+                <select id="period">
+
+                    <option value="30">
+                        1 Month
+                    </option>
+
+                    <option value="90">
+                        3 Months
+                    </option>
+
+                    <option value="180" selected>
+                        6 Months
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="field">
+
+                <label for="forecast-date">
+                    Forecast Date
+                </label>
+
+                <input
+                    type="date"
+                    id="forecast-date"
+                >
+
+            </div>
+
+
+            <button
+                id="analyze-btn"
+                class="btn control-btn"
+            >
+                Analyze
+            </button>
+
+        </div>
+
+
+        <!-- ERROR -->
+
+        <div id="viz-error"></div>
+
+
+        <!-- EMPTY STATE -->
+
+        <div id="empty-state" class="empty-state">
+
+            Select a company and forecast date,
+            then click <strong>Analyze</strong>.
+
+        </div>
+
+
+        <!-- ================================
+             DASHBOARD
+        ================================= -->
+
+        <div id="dashboard" style="display:none;">
+
+
+            <!-- ================================
+                 STOCK OVERVIEW
+            ================================= -->
+
+            <div class="cards">
+
+                <div class="stat-card">
+
+                    <div class="stat-title">
+                        Current Price
+                    </div>
+
+                    <div
+                        class="stat-value"
+                        id="current-price">
+                        —
+                    </div>
+
+                    <div
+                        class="stat-sub"
+                        id="current-date">
+                        —
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-title">
+                        Highest Price
+                    </div>
+
+                    <div
+                        class="stat-value"
+                        id="highest-price">
+                        —
+                    </div>
+
+                    <div class="stat-sub">
+                        Selected period
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-title">
+                        Lowest Price
+                    </div>
+
+                    <div
+                        class="stat-value"
+                        id="lowest-price">
+                        —
+                    </div>
+
+                    <div class="stat-sub">
+                        Selected period
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-title">
+                        Lower Historical Error
+                    </div>
+
+                    <div
+                        class="stat-value"
+                        id="best-model">
+                        —
+                    </div>
+
+                    <div
+                        class="stat-sub"
+                        id="best-model-mape">
+                        —
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================================
+                 HISTORICAL PRICE
+            ================================= -->
+
+            <section class="viz-section">
+
+                <div class="section-heading">
+
+                    <div class="section-title">
+                        Stock Price History
+                    </div>
+
+                    <p class="section-description">
+                        See how the stock price has changed over the selected period.
+                    </p>
+
+                </div>
+
+                <div class="chart-container">
+
+                    <canvas id="history-chart"></canvas>
+
+                </div>
+
+                <div class="insight-box">
+
+                    <strong>How to read:</strong>
+                    The gold line shows the actual closing price.
+                    SMA 10 and SMA 50 smooth the price movement to help
+                    show short-term and longer-term trends.
+
+                </div>
+
+            </section>
+
+
+            <!-- ================================
+                 FORECAST
+            ================================= -->
+
+            <section class="viz-section">
+
+                <div class="section-heading">
+
+                    <div class="section-title">
+                        Future Price Forecast
+                    </div>
+
+                    <p class="section-description">
+                        Compare the ARIMA and LSTM forecasts for the selected date.
+                    </p>
+
+                </div>
+
+
+                <div class="chart-container forecast-chart-container">
+
+                    <canvas id="comparison-chart"></canvas>
+
+                </div>
+
+
+                <div class="insight-box">
+
+                    <strong>How to read:</strong>
+                    The historical line shows past prices.
+                    The forecast lines show estimates generated by
+                    ARIMA and LSTM after the historical period.
+
+                </div>
+
+
+                <!-- Forecast Cards -->
+
+                <div class="forecast-cards">
+
+
+                    <!-- ARIMA -->
+
+                    <div class="forecast-card">
+
+                        <div class="forecast-card-title">
+                            ARIMA Forecast
+                        </div>
+
+                        <div
+                            class="forecast-price"
+                            id="arima-prediction">
+                            —
+                        </div>
+
+                        <div class="forecast-row">
+
+                            <span class="forecast-label">
+                                Expected Change
+                            </span>
+
+                            <strong id="arima-change">
+                                —
+                            </strong>
+
+                        </div>
+
+                        <div class="forecast-row">
+
+                            <span class="forecast-label">
+                                Expected Movement
+                            </span>
+
+                            <strong id="arima-trend">
+                                —
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- LSTM -->
+
+                    <div class="forecast-card">
+
+                        <div class="forecast-card-title">
+                            LSTM Forecast
+                        </div>
+
+                        <div
+                            class="forecast-price"
+                            id="lstm-prediction">
+                            —
+                        </div>
+
+                        <div class="forecast-row">
+
+                            <span class="forecast-label">
+                                Expected Change
+                            </span>
+
+                            <strong id="lstm-change">
+                                —
+                            </strong>
+
+                        </div>
+
+                        <div class="forecast-row">
+
+                            <span class="forecast-label">
+                                Expected Movement
+                            </span>
+
+                            <strong id="lstm-trend">
+                                —
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Simple summary -->
+
+                <div
+                    class="insight-box"
+                    id="forecast-insight">
+                    Select a forecast date to see the forecast summary.
+                </div>
+
+            </section>
+
+
+            <!-- ================================
+                 MODEL PERFORMANCE
+            ================================= -->
+
+            <section class="viz-section">
+
+                <div class="section-heading">
+
+                    <div class="section-title">
+                        Historical Model Performance
+                    </div>
+
+                    <p class="section-description">
+                        See how accurately the models performed on historical evaluation data.
+                    </p>
+
+                </div>
+
+
+                <div class="performance-layout">
+
+
+                    <div class="performance-chart">
+
+                        <canvas id="performance-chart"></canvas>
+
+                    </div>
+
+
+                    <div>
+
+                        <table class="performance-table">
+
+                            <thead>
+
+                                <tr>
+                                    <th>Model</th>
+                                    <th>RMSE</th>
+                                    <th>MAPE</th>
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                <tr>
+
+                                    <td>ARIMA</td>
+
+                                    <td
+                                        class="number"
+                                        id="arima-rmse">
+                                        —
+                                    </td>
+
+                                    <td
+                                        class="number"
+                                        id="arima-mape">
+                                        —
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>LSTM</td>
+
+                                    <td
+                                        class="number"
+                                        id="lstm-rmse">
+                                        —
+                                    </td>
+
+                                    <td
+                                        class="number"
+                                        id="lstm-mape">
+                                        —
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+
+                        <div class="performance-note">
+
+                            Lower RMSE and MAPE indicate lower
+                            historical prediction error.
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- ================================
+                 UNDERSTANDING
+            ================================= -->
+
+            <section class="viz-section">
+
+                <div class="section-heading">
+
+                    <div class="section-title">
+                        Understanding the Page
+                    </div>
+
+                    <p class="section-description">
+                        A quick explanation of the information shown above.
+                    </p>
+
+                </div>
+
+
+                <div class="understanding-grid">
+
+
+                    <div class="understanding-item">
+
+                        <strong>📈 Stock Price</strong>
+
+                        <span>
+                            Shows how the stock's closing price
+                            changed during the selected period.
+                        </span>
+
+                    </div>
+
+
+                    <div class="understanding-item">
+
+                        <strong>〽 Moving Average</strong>
+
+                        <span>
+                            SMA 10 and SMA 50 smooth price movements
+                            to make trends easier to see.
+                        </span>
+
+                    </div>
+
+
+                    <div class="understanding-item">
+
+                        <strong>🔮 Forecast</strong>
+
+                        <span>
+                            ARIMA and LSTM provide estimated future
+                            closing prices based on historical patterns.
+                        </span>
+
+                    </div>
+
+
+                    <div class="understanding-item">
+
+                        <strong>📊 Model Error</strong>
+
+                        <span>
+                            RMSE and MAPE describe historical
+                            prediction error. Lower values indicate
+                            lower error on the evaluation data.
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </div>
+
+
+    <!-- Chart.js -->
+
+    <script src="js/chart.js"></script>
+
+    <!-- Navigation -->
+
+    <script src="js/nav.js"></script>
+
+    <!-- Visualization -->
+
+    <script src="js/visualize.js"></script>
+
+</body>
+
+</html>

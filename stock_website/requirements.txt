@@ -1,0 +1,13 @@
+flask
+flask-cors
+flask-bcrypt
+pyjwt
+pymongo
+yfinance
+pandas
+numpy
+statsmodels
+tensorflow
+scikit-learn
+requests
+dateparser

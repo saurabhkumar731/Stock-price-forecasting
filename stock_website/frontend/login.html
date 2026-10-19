@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Log in — Ledger</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="topnav">
+  <div class="brand"><a href="index.html" style="color:inherit;">Ledger<em>.</em></a></div>
+  <nav><a href="signup.html">Need an account?</a></nav>
+</div>
+
+<div class="auth-container">
+  <h2>Log in</h2>
+  <p class="muted" style="margin-bottom:28px;">Welcome back — enter your details below.</p>
+
+  <form id="login-form">
+    <div class="field">
+      <label for="username">Username</label>
+      <input type="text" id="username" required autocomplete="username">
+    </div>
+    <div class="field">
+      <label for="password">Password</label>
+      <input type="password" id="password" required autocomplete="current-password">
+    </div>
+    <button type="submit" class="btn btn-solid" style="width:100%;">Log in</button>
+    <div class="error-text" id="error"></div>
+  </form>
+</div>
+
+<script src="js/auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+                         USER
+                           │
+                           ▼
+              ┌──────────────────────┐
+              │ Select Company       │
+              │ Select Target Date   │
+              │ Select Mode          │
+              └──────────┬───────────┘
+                         │
+                         ▼
+                 Flask /predict API
+                         │
+                         ▼
+              ┌──────────────────────┐
+              │ Load Saved Models    │
+              │                      │
+              │ ARIMA .pkl           │
+              │ LSTM .keras          │
+              │ Scaler .pkl          │
+              └──────────┬───────────┘
+                         │
+                         ▼
+                Fetch Fresh Data
+                  from yfinance
+                         │
+                         ▼
+              ┌──────────────────────┐
+              │ Data Processing      │
+              │                      │
+              │ Remove NaN           │
+              │ Sort by date         │
+              │ Remove duplicates    │
+              │ Remove today's       │
+              │ unfinished candle    │
+              └──────────┬───────────┘
+                         │
+                         ▼
+               Latest Completed Close
+                         │
+                  ┌──────┴──────┐
+                  │             │
+                  ▼             ▼
+              ARIMA            LSTM
+                  │             │
+                  │             │
+       Saved ARIMA .pkl    Saved LSTM .keras
+                  │             │
+                  ▼             ▼
+        Find last value      Latest 60
+        of trained model     trading closes
+                  │             │
+                  ▼             ▼
+        Find new Yahoo       Existing
+        observations         scaler.pkl
+                  │             │
+                  ▼             ▼
+             append()       model.predict()
+                  │             │
+                  ▼             ▼
+          ARIMA Forecast    LSTM Forecast
+                  │             │
+                  └──────┬──────┘
+                         │
+                         ▼
+                Compare Predictions
+                         │
+                         ▼
+                 Flask JSON Response
+                         │
+                         ▼
+                   Frontend
+                         │
+                         ▼
+              ┌────────────────────┐
+              │ Last Close         │
+              │ ARIMA Prediction   │
+              │ LSTM Prediction    │
+              │ Trend              │
+              │ % Change           │
+              └────────────────────┘

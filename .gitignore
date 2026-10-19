@@ -1,0 +1,9 @@
+.env
+/models/
+stock_website/models/
+**/models/
+.venv/
+venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
